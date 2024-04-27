@@ -49,6 +49,7 @@ class Screens:
         chairs = py.sprite.Group()
         tables = py.sprite.Group()
         tableLegs = py.sprite.Group()
+        items = py.sprite.Group()
         #Initialize cafe objects
         tmClass.initializeCafeObjects(cafe, floor, chairs, tables, tableLegs)
         inventory_open = False  # A flag to check if inventory is open
@@ -73,29 +74,22 @@ class Screens:
             for event in py.event.get():
                 if event.type == py.QUIT:
                     run = False
-                if event.type == py.KEYDOWN:
+                elif event.type == py.KEYDOWN:
                     if event.key == py.K_i:
-                        # Instead of toggling inventory directly, call pauseMenu
                         Screens.inventoryMenu(screen, inventory)
                     elif event.key == py.K_ESCAPE:
-                        Screens.pauseMenu()
-            # Player movement logic here
-            if py.key.get_focused():
-                keyArr = py.key.get_pressed()
-                if keyArr == py.K_i:
-                    Screens.pauseMenu(screen, inventory)
-                if keyArr == py.K_ESCAPE:
-                    run = False
-                # Update player position and animation
-                player.move(keyArr=keyArr, obstacles=[tables])  # This updates the player's position and possibly the frame of animation
-                spawn_timer += dt  # Increment spawn timer by delta time
-                if spawn_timer >= spawn_interval:
-                    spawn_timer %= spawn_interval  # Reset timer with remainder to stay accurate
-                    self.spawnCustomers(customer_prob, customersGroup, screen)
-                i, j = customertgtX, customertgtY
-                for customer in customersGroup.sprites():
-                    customer.pathfinding((i, j),  obstacles=[tables, playerGroup])
-                    i -= 50
+                        run = False
+            
+            keyArr = py.key.get_pressed()
+            player.move(keyArr, [tables]) # This updates the player's position and frame of animation
+            spawn_timer += dt  # Increment spawn timer by delta time
+            if spawn_timer >= spawn_interval:
+                spawn_timer %= spawn_interval  # Reset timer with remainder to stay accurate
+                self.spawnCustomers(customer_prob, customersGroup, screen)
+            i, j = customertgtX, customertgtY
+            for customer in customersGroup.sprites():
+                customer.pathfinding((i, j),  obstacles=[tables, playerGroup])
+                i -= 50
             
             # Calculate player's position on the screen (without camera offset)
             player_screen_pos_x = player.dx + camera_x

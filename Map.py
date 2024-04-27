@@ -4,6 +4,7 @@ from pytmx.util_pygame import load_pygame
 from Tables import Tables, TableLegs
 from Chairs import Chairs
 from Floor import Floor
+
 class Map:
     def __init__(self, filename):
         self.tm = load_pygame(filename)

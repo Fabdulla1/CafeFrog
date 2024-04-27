@@ -46,52 +46,61 @@ class Player(py.sprite.Sprite):
         moving = False
         x, y = 0, 0  # Movement deltas
 
-        if keyArr[py.K_w] and self.canMove(0, -4, obstacles):
-            y -= 4
+        # Check each direction and attempt to move, update facing direction regardless of movement
+        if keyArr[py.K_w]:
+            if self.canMove(0, -4, obstacles):
+                y -= 4
+                moving = True
             self.animation_frames = self.moveUp
-            moving = True
 
-        if keyArr[py.K_s] and self.canMove(0, 4, obstacles):
-            y += 4
+        if keyArr[py.K_s]:
+            if self.canMove(0, 4, obstacles):
+                y += 4
+                moving = True
             self.animation_frames = self.moveDown
-            moving = True
 
-        if keyArr[py.K_a] and self.canMove(-4, 0, obstacles):
-            x -= 4
+        if keyArr[py.K_a]:
+            if self.canMove(-4, 0, obstacles):
+                x -= 4
+                moving = True
             self.animation_frames = self.moveLeft
-            moving = True
 
-        if keyArr[py.K_d] and self.canMove(4, 0, obstacles):
-            x += 4
+        if keyArr[py.K_d]:
+            if self.canMove(4, 0, obstacles):
+                x += 4
+                moving = True
             self.animation_frames = self.moveRight
-            moving = True
 
-        # Update position
+        # Update position if movement is allowed
         self.dx += x
         self.dy += y
         self.rect.x = self.dx
         self.rect.y = self.dy
 
+        # Update the animation based on movement
         if moving:
             if now - self.last_update > 100:  # Update every 100ms
                 self.last_update = now
                 self.frame = (self.frame + 1) % len(self.animation_frames)
                 self.current_frame = self.animation_frames[self.frame]
         else:
-            # Reset to idle animation based on last direction
-            if self.animation_frames == self.moveDown:
-                self.current_frame = self.idleDown
-            elif self.animation_frames == self.moveUp:
-                self.current_frame = self.idleUp
-            elif self.animation_frames == self.moveRight:
-                self.current_frame = self.idleRight
-            elif self.animation_frames == self.moveLeft:
-                self.current_frame = self.idleLeft
-
+            # Set to idle animation based on last direction, and reset frame index
+            self.set_idle_animation()
             self.frame = 0
 
         # Draw the current frame at the new position
         self.screen.blit(self.current_frame, self.rect)
+    
+    def set_idle_animation(self):
+        # Set idle animation based on last movement animation
+        if self.animation_frames == self.moveDown:
+            self.current_frame = self.idleDown
+        elif self.animation_frames == self.moveUp:
+            self.current_frame = self.idleUp
+        elif self.animation_frames == self.moveRight:
+            self.current_frame = self.idleRight
+        elif self.animation_frames == self.moveLeft:
+            self.current_frame = self.idleLeft
 
     def draw(self, camera_offset_x, camera_offset_y):
         # Calculate the position with the camera offset
