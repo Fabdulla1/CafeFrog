@@ -4,6 +4,7 @@ from Player import Player
 from Inventory import Inventory
 from Map import Map as world
 import random
+from Items import Items
 import time
 
 class Screens:
@@ -45,11 +46,13 @@ class Screens:
         inventory = Inventory(screen)
         customer_prob = 50 #probability for spawning customers.
         #initialize all sprite groups. AKA list of all entities/objects for cafe
+        drink = Items(image="Assets/Drinks/Beaver Brew.png", name="Beaver Brew", description="A luscious drink that's rich and bound to give you creativity", x=503, y=394, screen=screen)
         floor = py.sprite.Group()
         chairs = py.sprite.Group()
         tables = py.sprite.Group()
         tableLegs = py.sprite.Group()
         items = py.sprite.Group()
+        items.add(drink)
         #Initialize cafe objects
         tmClass.initializeCafeObjects(cafe, floor, chairs, tables, tableLegs)
         inventory_open = False  # A flag to check if inventory is open
@@ -109,7 +112,10 @@ class Screens:
             camera_y = min(0, max(-(map_height - screen_height), camera_y))  # Max camera_y is 0, min is -(mapHeight - screenHeight)
 
             tmClass.drawCafe(screen=screen, camera_x=camera_x, camera_y=camera_y, floorGroup=floor, chairGroup=chairs, tableGroup=tables, tableLegs=tableLegs) # Draw the cafe with camera offset
-    
+
+            #Draw drinks
+            for drink in items.sprites():
+                drink.draw(camera_x, camera_y)
             # Draw the player with camera offset
             for customer in customersGroup.sprites():
                 customer.draw(camera_x, camera_y)

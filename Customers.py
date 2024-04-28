@@ -1,5 +1,23 @@
 import pygame as py
 import random
+import numpy as np
+from sklearn.naive_bayes import MultinomialNB
+
+class DialogueClassifier:
+    def __init__(self):
+        self.model = MultinomialNB()
+        # Dummy train (here we just pretend as if we are training)
+        self.train()
+
+    def train(self):
+        # Dummy feature vectors and labels (for demonstration)
+        X = np.array([[1,1], [2,0], [0,1], [1,0], [0,1], [1,1]])  # Simplified feature vectors
+        y = np.array(['greeting', 'farewell', 'complaint', 'greeting', 'complaint', 'farewell'])  # Labels
+        self.model.fit(X, y)
+
+    def classify(self, features):
+        # Dummy predict (we simulate a feature input)
+        return self.model.predict(np.array([features]))[0]
 
 class Customers(py.sprite.Sprite):
     def __init__(self, image, screen):
@@ -27,10 +45,16 @@ class Customers(py.sprite.Sprite):
         self.current_frame = self.idleDown
         self.last_update = py.time.get_ticks()
         self.frame = 0
-        self.font = py.font.Font(None, 24)  # Specify None for default font, 24 for size
-        self.dialog = ["Hey, how are you? Can I order a froggaccino?", "What's on the menu today?", "Do you do refunds?", "What's the special?"]  # Example dialogue
-        self.dialog_box = None  # Will be used to display dialog text
-        self.prompt_visible = False  # Track if prompt should be visible
+        self.font = py.font.Font(None, 24)
+        self.dialogue_classifier = DialogueClassifier()
+        self.dialog = {
+            'greeting': ["Hey there!", "Hello, how can I assist you?"],
+            'inquiry': ["We have the finest goods, what are you interested in?", "Our special today is..."],
+            'complaint': ["I'm sorry to hear that. How can I make it better?", "We aim to improve, thank you for your feedback."],
+            'farewell': ["Goodbye, have a great day!", "See you next time!"]
+        }
+        self.dialog_box = None
+        self.prompt_visible = False
         self.dialog_visible = False
 
     def get_image(self, frameX, frameY):
@@ -109,11 +133,13 @@ class Customers(py.sprite.Sprite):
         screen_x = self.dx + camera_offset_x
         screen_y = self.dy + camera_offset_y
         self.draw_prompt()
+        if self.dialog_visible:
+            self.draw_dialog()
+
         for event in py.event.get():
             if event.type == py.KEYDOWN:
                 if event.key == py.K_e and self.prompt_visible:
                     self.handle_interaction(event)
-        self.draw_dialog()
         self.screen.blit(self.current_frame, (screen_x, screen_y))
 
     def canMove(self, dx, dy, obstacles):
@@ -145,22 +171,25 @@ class Customers(py.sprite.Sprite):
             self.screen.blit(text_surface, (x, y))
 
     def handle_interaction(self, event):
-        """Handle key press event for interaction."""
-        self.toggle_dialog()
+        self.dialog_visible = not self.dialog_visible
+        if self.dialog_visible:
+            features = [random.randint(0, 2), random.randint(0, 2)]  # Dummy features
+            dialogue_type = self.dialogue_classifier.classify(features)
+            self.current_dialog = random.choice(self.dialog[self.dialogue_classifier.classify(features)])
+        else:
+            self.current_dialog = None
 
     def toggle_dialog(self):
         """Toggle the visibility of the dialog box."""
         self.dialog_visible = not self.dialog_visible
 
     def draw_dialog(self):
-        """Draw the dialog box if dialog_visible is True."""
         if self.dialog_visible:
-            dialogue_text = random.choice(self.dialog)  # Assuming we're just showing the first item for simplicity
-            dialog_box = self.font.render(dialogue_text, True, (255, 255, 255))
-            # Position the dialog box at the bottom of the screen
+            dialog_box = self.font.render(self.current_dialog, True, (255, 255, 255))
             x = (self.screen.get_width() - dialog_box.get_width()) // 2
-            y = self.screen.get_height() - dialog_box.get_height() - 20  # 20 pixels from bottom
+            y = self.screen.get_height() - dialog_box.get_height() - 20
             self.screen.blit(dialog_box, (x, y))
+
 
 
     def updateDialog(self, player_rect):
