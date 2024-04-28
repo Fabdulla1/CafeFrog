@@ -116,6 +116,9 @@ class Screens:
             #Draw drinks
             for drink in items.sprites():
                 drink.draw(camera_x, camera_y)
+                if py.sprite.collide_mask(drink, player):
+                    items.remove(drink)
+                    drink = None
             # Draw the player with camera offset
             for customer in customersGroup.sprites():
                 customer.draw(camera_x, camera_y)
