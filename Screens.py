@@ -5,7 +5,6 @@ from Inventory import Inventory
 from Map import Map as world
 import random
 from Items import Items
-import time
 
 class Screens:
     @staticmethod
@@ -162,10 +161,6 @@ class Screens:
     def pauseMenu(self, screen):
         #clear the screen for rendering
         screen.fill((0, 0, 0))
-
-
-    def moveCamera(self, playerdx, playerdy):
-        pass
 
 
 screens = Screens()
