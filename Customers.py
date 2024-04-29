@@ -190,8 +190,6 @@ class Customers(py.sprite.Sprite):
             y = self.screen.get_height() - dialog_box.get_height() - 20
             self.screen.blit(dialog_box, (x, y))
 
-
-
     def updateDialog(self, player_rect):
         """Call this method every frame, passing in the player's rect."""
         self.check_proximity(player_rect)
