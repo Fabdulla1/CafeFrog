@@ -48,10 +48,10 @@ class Customers(py.sprite.Sprite):
         self.font = py.font.Font(None, 24)
         self.dialogue_classifier = DialogueClassifier()
         self.dialog = {
-            'greeting': ["Hey there!", "Hello, how can I assist you?"],
-            'inquiry': ["We have the finest goods, what are you interested in?", "Our special today is..."],
-            'complaint': ["I'm sorry to hear that. How can I make it better?", "We aim to improve, thank you for your feedback."],
-            'farewell': ["Goodbye, have a great day!", "See you next time!"]
+            'greeting': ["Hey there!", "How are you?", "Working hard or hardly working? XD"],
+            'inquiry': ["What do you have for sale today?", "What's the special today?", ""],
+            'complaint': ["I'm really sad about this.", "Can I speak to the manager"],
+            'farewell': ["Goodbye, have a great day!", "See you next time!", "Thanks for the coffee!"]
         }
         self.dialog_box = None
         self.prompt_visible = False
