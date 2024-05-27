@@ -8,6 +8,11 @@ class Player(py.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.mask = py.mask.from_surface(self.image)
 
+        # Checks for customer's activity
+        self.paid = False
+        self.togo = False
+        self.inCafe = True
+
         # Initialize player's position
         self.dx = self.screen.get_width() // 2
         self.dy = self.screen.get_height() // 2

@@ -56,6 +56,10 @@ class Customers(py.sprite.Sprite):
         self.dialog_box = None
         self.prompt_visible = False
         self.dialog_visible = False
+        
+        # Checks for customer's activity
+        self.paid = False
+        self.togo = False
 
     def get_image(self, frameX, frameY):
         image = py.Surface((self.frame_width, self.frame_height), py.SRCALPHA)
