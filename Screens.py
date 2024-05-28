@@ -85,10 +85,8 @@ class Screens:
             if spawn_timer >= spawn_interval:
                 spawn_timer %= spawn_interval  # Reset timer with remainder to stay accurate
                 self.spawnCustomers(customer_prob, customersGroup, screen)
-            i, j = customertgtX, customertgtY
             for customer in customersGroup.sprites():
-                customer.pathfinding((i, j),  obstacles=[tables, playerGroup])
-                i -= 50
+                customer.pathfinding(obstacles=[tables, playerGroup])
             
             # Calculate player's position on the screen (without camera offset)
             player_screen_pos_x = player.dx + camera_x
