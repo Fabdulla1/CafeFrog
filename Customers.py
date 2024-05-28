@@ -60,6 +60,8 @@ class Customers(py.sprite.Sprite):
         # Checks for customer's activity
         self.paid = False
         self.togo = False
+        self.targetX = 711
+        self.targetY = 361
 
     def get_image(self, frameX, frameY):
         image = py.Surface((self.frame_width, self.frame_height), py.SRCALPHA)
@@ -69,11 +71,17 @@ class Customers(py.sprite.Sprite):
         self.mask = py.mask.from_surface(image)
         return image
     
-    def pathfinding(self, target, obstacles):
+    #TODO: 
+    def determineNextLocation(self):
+        pass
+    
+    def pathfinding(self, obstacles):
         now = py.time.get_ticks()
         moving = False
+        self.determineNextLocation()
 
-        if abs(self.dx - target[0]) <= 4 and abs(self.dy - target[1]) <= 4:
+        
+        if abs(self.dx - self.targetX) <= 4 and abs(self.dy - self.targetY) <= 4:
             self.set_idle_animation()
             return
 
@@ -85,7 +93,7 @@ class Customers(py.sprite.Sprite):
         }
 
         f_values = {
-            direction: self.gCalc(self.dx, self.dy, self.dx + dx, self.dy + dy) + self.hCalc(self.dx + dx, self.dy + dy, target[0], target[1])
+            direction: self.gCalc(self.dx, self.dy, self.dx + dx, self.dy + dy) + self.hCalc(self.dx + dx, self.dy + dy, self.targetX, self.targetY)
             for direction, (dx, dy, _) in directions.items()
         }
 
