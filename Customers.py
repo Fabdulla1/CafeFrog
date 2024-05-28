@@ -73,6 +73,7 @@ class Customers(py.sprite.Sprite):
     
     #TODO: 
     def determineNextLocation(self):
+        #variables to use: self.targetX, self.targetY, self.paid, self.togo
         pass
     
     def pathfinding(self, obstacles):

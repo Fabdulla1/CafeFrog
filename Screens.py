@@ -36,9 +36,6 @@ class Screens:
         
         playerGroup = py.sprite.Group()
         customersGroup = py.sprite.Group()
-    
-        customertgtX = 711
-        customertgtY = 361
 
         playerGroup.add(player)
 
