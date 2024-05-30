@@ -5,10 +5,10 @@ from sklearn.feature_extraction.text import CountVectorizer
 import openpyxl
 
 class DialogueClassifier:
-    def __init__(self, excel_file_path):
+    def __init__(self):
         self.model = MultinomialNB()
         self.vectorizer = CountVectorizer()
-        self.train(excel_file_path)
+        self.train("Data/AI Training Set.xlsx")
 
     def train(self, excel_file_path):
         # Load data from Excel
@@ -39,6 +39,3 @@ class DialogueClassifier:
             pass
         
 
-
-model = DialogueClassifier("Data/AI Training Set.xlsx")
-print(model.classify("How is your day?"))

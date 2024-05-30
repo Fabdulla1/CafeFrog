@@ -5,6 +5,7 @@ from Inventory import Inventory
 from Map import Map as world
 import random
 from Items import Items
+from DialogueClassifier import DialogueClassifier
 
 class Screens:
     @staticmethod
@@ -28,6 +29,7 @@ class Screens:
         map_width = cafe.tilewidth * cafe.width  # Total width of the map in pixels
         map_height = cafe.tileheight * cafe.height  # Total height of the map in pixels
         player = Player(image="Assets/Player/playerSprite.png", screen=screen)
+        customerChatBot = DialogueClassifier()
         clock = py.time.Clock()
         FPS = 200
         spawn_timer = 0
@@ -115,14 +117,12 @@ class Screens:
                 if py.sprite.collide_mask(drink, player):
                     items.remove(drink)
                     drink = None
-            # Draw the player with camera offset
+            # Draw the player and Customers with camera offset
             for customer in customersGroup.sprites():
                 customer.draw(camera_x, camera_y)
                 customer.updateDialog(player.rect)
-                
-            
-
             player.draw(camera_x, camera_y)
+
             #Helps with pixel locations with mouse
             mouse_x, mouse_y = py.mouse.get_pos()
             render_text(f"Mouse: {mouse_x}, {mouse_y}", (10, 10))

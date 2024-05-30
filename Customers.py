@@ -35,6 +35,7 @@ class Customers(py.sprite.Sprite):
         # Checks for customer's activity
         self.paid = False
         self.togo = False
+        #Customer's target location upon entrance. Takes them straight to the cash register.
         self.targetX = 711
         self.targetY = 361
 
@@ -149,7 +150,7 @@ class Customers(py.sprite.Sprite):
             return True
         else:
             self.prompt_visible = False
-            self.dialog_visible = False  # Hide dialog if player moves away3
+            self.dialog_visible = False  # Hide dialog if player moves away
             return False
 
     def draw_prompt(self):
