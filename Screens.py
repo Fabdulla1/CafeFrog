@@ -34,7 +34,12 @@ class Screens:
         FPS = 200
         spawn_timer = 0
         spawn_interval = 1000
-        
+        # Text input box settings
+        input_box_width = 200
+        input_box_height = 40
+        input_rect = py.Rect(50, 100, input_box_width, input_box_height)
+        input_text = ''
+        active = False
         
         playerGroup = py.sprite.Group()
         customersGroup = py.sprite.Group()
@@ -66,6 +71,43 @@ class Screens:
             font = py.font.Font()  # Use Pygame's default font
             text_surface = font.render(text, True, color)  # True for anti-aliased text
             screen.blit(text_surface, position)
+        def draw_text_input_box(screen, font, prompt, input_rect, input_text, active):
+            COLOR_ACTIVE = py.Color('lightskyblue3')
+            COLOR_INACTIVE = py.Color('gray15')
+            COLOR_TEXT = py.Color('white')
+
+            # Choose color based on active state
+            color = COLOR_ACTIVE if active else COLOR_INACTIVE
+
+            # Render prompt text
+            prompt_surface = font.render(prompt, True, COLOR_TEXT)
+            screen.blit(prompt_surface, (input_rect.x, input_rect.y - 30))
+
+            # Render input text
+            text_surface = font.render(input_text, True, COLOR_TEXT)
+            screen.blit(text_surface, (input_rect.x + 5, input_rect.y + 5))
+
+            # Draw input box
+            py.draw.rect(screen, color, input_rect, 2)
+
+        def handle_text_input(events, active, input_text, input_rect):
+            for event in events:
+                if event.type == py.KEYDOWN:
+                    if active:
+                        if event.key == py.K_RETURN:
+                            print(input_text)  # Debug print
+                            return input_text, False  # Return the input text and set active to False
+                        elif event.key == py.K_BACKSPACE:
+                            input_text = input_text[:-1]
+                        else:
+                            input_text += event.unicode
+                elif event.type == py.MOUSEBUTTONDOWN:
+                    if input_rect.collidepoint(event.pos):
+                        active = not active
+                    else:
+                        active = False
+            return input_text, active
+
 
         while run:
             screen.fill((0, 0, 0))  # Clear the screen
@@ -117,10 +159,19 @@ class Screens:
                 if py.sprite.collide_mask(drink, player):
                     items.remove(drink)
                     drink = None
-            # Draw the player and Customers with camera offset
+            #Draw customer and player interaction
             for customer in customersGroup.sprites():
                 customer.draw(camera_x, camera_y)
-                customer.updateDialog(player.rect)
+                if customer.check_proximity(player.rect):
+                    customer.draw_prompt()
+                    keyArr = py.key.get_pressed()
+                    if keyArr[py.K_e]:
+                        self.handleDialogue()
+            # Draw and handle text input box
+            input_text, active = handle_text_input(py.event.get(), active, input_text, input_rect)
+            draw_text_input_box(screen, py.font.Font(None, 36), "Type here:", input_rect, input_text, active)
+            
+            #Draw player
             player.draw(camera_x, camera_y)
 
             #Helps with pixel locations with mouse
@@ -128,6 +179,10 @@ class Screens:
             render_text(f"Mouse: {mouse_x}, {mouse_y}", (10, 10))
             py.display.update()
             clock.tick(60)
+    def handleDialogue(self):
+
+
+
 
     def inventoryMenu(screen, inventory):
         # Clear the screen to show the pause menu

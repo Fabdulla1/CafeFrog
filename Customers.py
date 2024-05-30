@@ -161,14 +161,6 @@ class Customers(py.sprite.Sprite):
             y = self.rect.top - 30
             self.screen.blit(text_surface, (x, y))
 
-    def handle_interaction(self, event):
-        self.dialog_visible = not self.dialog_visible
-        if self.dialog_visible:
-            features = [random.randint(0, 2), random.randint(0, 2)]  # Dummy features
-            dialogue_type = self.dialogue_classifier.classify(features)
-            self.current_dialog = random.choice(self.dialog[self.dialogue_classifier.classify(features)])
-        else:
-            self.current_dialog = None
 
     def toggle_dialog(self):
         """Toggle the visibility of the dialog box."""
