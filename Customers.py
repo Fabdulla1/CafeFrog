@@ -1,24 +1,6 @@
 import pygame as py
 import random
-import numpy as np
-from sklearn.naive_bayes import MultinomialNB
-
-class DialogueClassifier:
-    def __init__(self):
-        self.model = MultinomialNB()
-        # Dummy train (here we just pretend as if we are training)
-        self.train()
-
-    def train(self):
-        # Dummy feature vectors and labels (for demonstration)
-        X = np.array([[1,1], [2,0], [0,1], [1,0], [0,1], [1,1]])  # Simplified feature vectors
-        y = np.array(['greeting', 'farewell', 'complaint', 'greeting', 'complaint', 'farewell'])  # Labels
-        self.model.fit(X, y)
-
-    def classify(self, features):
-        # Dummy predict (we simulate a feature input)
-        return self.model.predict(np.array([features]))[0]
-
+    
 class Customers(py.sprite.Sprite):
     def __init__(self, image, screen):
         super().__init__()
@@ -46,13 +28,6 @@ class Customers(py.sprite.Sprite):
         self.last_update = py.time.get_ticks()
         self.frame = 0
         self.font = py.font.Font(None, 24)
-        self.dialogue_classifier = DialogueClassifier()
-        self.dialog = {
-            'greeting': ["Hey there!", "How are you?", "Working hard or hardly working? XD"],
-            'inquiry': ["What do you have for sale today?", "What's the special today?", ""],
-            'complaint': ["I'm really sad about this.", "Can I speak to the manager"],
-            'farewell': ["Goodbye, have a great day!", "See you next time!", "Thanks for the coffee!"]
-        }
         self.dialog_box = None
         self.prompt_visible = False
         self.dialog_visible = False
@@ -171,9 +146,11 @@ class Customers(py.sprite.Sprite):
         distance = self.rect.colliderect(player_rect.inflate(50, 50))  # Inflate the player rect for proximity checking
         if distance:
             self.prompt_visible = True
+            return True
         else:
             self.prompt_visible = False
-            self.dialog_visible = False  # Hide dialog if player moves away
+            self.dialog_visible = False  # Hide dialog if player moves away3
+            return False
 
     def draw_prompt(self):
         """Draw the 'Press E to talk' prompt above the customer."""
