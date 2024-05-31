@@ -2,7 +2,6 @@ import numpy as np
 from sklearn.naive_bayes import MultinomialNB
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
-import openpyxl
 
 class DialogueClassifier:
     def __init__(self):
@@ -37,5 +36,6 @@ class DialogueClassifier:
             pass
         if intent == 'Goodbyes':
             pass
-        
+model = DialogueClassifier()
+print(model.classify("Alright, you have a good day my friend! Take care!"))
 

@@ -50,7 +50,8 @@ class Customers(py.sprite.Sprite):
     #TODO: 
     def determineNextLocation(self):
         #variables to use: self.targetX, self.targetY, self.paid, self.togo
-        pass
+        self.targetX
+        self.targetY
     
     def pathfinding(self, obstacles):
         now = py.time.get_ticks()
@@ -176,5 +177,7 @@ class Customers(py.sprite.Sprite):
     def updateDialog(self, player_rect):
         """Call this method every frame, passing in the player's rect."""
         self.check_proximity(player_rect)
+
+    
 
     
