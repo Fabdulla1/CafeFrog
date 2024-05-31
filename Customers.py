@@ -121,14 +121,6 @@ class Customers(py.sprite.Sprite):
     def draw(self, camera_offset_x, camera_offset_y):
         screen_x = self.dx + camera_offset_x
         screen_y = self.dy + camera_offset_y
-        self.draw_prompt()
-        if self.dialog_visible:
-            self.draw_dialog()
-
-        for event in py.event.get():
-            if event.type == py.KEYDOWN:
-                if event.key == py.K_e and self.prompt_visible:
-                    self.handle_interaction(event)
         self.screen.blit(self.current_frame, (screen_x, screen_y))
 
     def canMove(self, dx, dy, obstacles):
@@ -161,20 +153,5 @@ class Customers(py.sprite.Sprite):
             y = self.rect.top - 30
             self.screen.blit(text_surface, (x, y))
 
-
-    def toggle_dialog(self):
-        """Toggle the visibility of the dialog box."""
-        self.dialog_visible = not self.dialog_visible
-
-    def draw_dialog(self):
-        if self.dialog_visible:
-            dialog_box = self.font.render(self.current_dialog, True, (255, 255, 255))
-            x = (self.screen.get_width() - dialog_box.get_width()) // 2
-            y = self.screen.get_height() - dialog_box.get_height() - 20
-            self.screen.blit(dialog_box, (x, y))
-
-    def updateDialog(self, player_rect):
-        """Call this method every frame, passing in the player's rect."""
-        self.check_proximity(player_rect)
 
     

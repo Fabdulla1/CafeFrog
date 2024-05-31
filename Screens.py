@@ -71,42 +71,6 @@ class Screens:
             font = py.font.Font()  # Use Pygame's default font
             text_surface = font.render(text, True, color)  # True for anti-aliased text
             screen.blit(text_surface, position)
-        def draw_text_input_box(screen, font, prompt, input_rect, input_text, active):
-            COLOR_ACTIVE = py.Color('lightskyblue3')
-            COLOR_INACTIVE = py.Color('gray15')
-            COLOR_TEXT = py.Color('white')
-
-            # Choose color based on active state
-            color = COLOR_ACTIVE if active else COLOR_INACTIVE
-
-            # Render prompt text
-            prompt_surface = font.render(prompt, True, COLOR_TEXT)
-            screen.blit(prompt_surface, (input_rect.x, input_rect.y - 30))
-
-            # Render input text
-            text_surface = font.render(input_text, True, COLOR_TEXT)
-            screen.blit(text_surface, (input_rect.x + 5, input_rect.y + 5))
-
-            # Draw input box
-            py.draw.rect(screen, color, input_rect, 2)
-
-        def handle_text_input(events, active, input_text, input_rect):
-            for event in events:
-                if event.type == py.KEYDOWN:
-                    if active:
-                        if event.key == py.K_RETURN:
-                            print(input_text)  # Debug print
-                            return input_text, False  # Return the input text and set active to False
-                        elif event.key == py.K_BACKSPACE:
-                            input_text = input_text[:-1]
-                        else:
-                            input_text += event.unicode
-                elif event.type == py.MOUSEBUTTONDOWN:
-                    if input_rect.collidepoint(event.pos):
-                        active = not active
-                    else:
-                        active = False
-            return input_text, active
 
 
         while run:
@@ -166,10 +130,10 @@ class Screens:
                     customer.draw_prompt()
                     keyArr = py.key.get_pressed()
                     if keyArr[py.K_e]:
-                        self.handleDialogue()
-            # Draw and handle text input box
-            input_text, active = handle_text_input(py.event.get(), active, input_text, input_rect)
-            draw_text_input_box(screen, py.font.Font(None, 36), "Type here:", input_rect, input_text, active)
+                        #Handles text box.
+                        self.handleDialogue(screen=screen, font=py.font.Font(None, 36), prompt="Type here:", 
+                                            input_text=input_text, input_rect=py.Rect(100, 550, input_box_width, input_box_height), chatBot=customerChatBot, customer=customer,
+                                            camX=camera_x, camY=camera_y, player=player)
             
             #Draw player
             player.draw(camera_x, camera_y)
@@ -179,7 +143,68 @@ class Screens:
             render_text(f"Mouse: {mouse_x}, {mouse_y}", (10, 10))
             py.display.update()
             clock.tick(60)
-    def handleDialogue(self):
+
+    def handleDialogue(self, screen, font, prompt, input_text, input_rect, chatBot, customer, camX, camY, player):
+
+        def draw_text_input_box(screen, font, prompt, input_rect, input_text):
+            # Colors
+            COLOR_ACTIVE = py.Color('lightskyblue3')
+            COLOR_TEXT = py.Color('white')
+
+            # Render prompt text
+            prompt_surface = font.render(prompt, True, COLOR_TEXT)
+            screen.blit(prompt_surface, (input_rect.x, input_rect.y - 30))
+
+            # Render input text
+            text_surface = font.render(input_text, True, COLOR_TEXT)
+            screen.blit(text_surface, (input_rect.x + 5, input_rect.y + 5))
+
+            # Draw input box
+            py.draw.rect(screen, COLOR_ACTIVE, input_rect, 2)
+
+        def handle_text_input(events, input_text):
+            for event in events:
+                if event.type == py.KEYDOWN:
+                    if event.key == py.K_RETURN:
+                        print("User entered:", input_text)  # Debug print
+                        return input_text, True, True  # Return the input text and indicate Enter was pressed
+                    elif event.key == py.K_BACKSPACE:
+                        input_text = input_text[:-1]
+                    elif event.key == py.K_ESCAPE:
+                        return input_text, True, False
+                    else:
+                        input_text += event.unicode
+            return input_text, False, True
+        def renderCustomerResponse(response):
+            if response:
+                response_surface = font.render(response, True, py.Color('white'))
+                screen.blit(response_surface, (50, 450))  # Position response on the screen
+
+        
+        run = True
+        response = None
+        while run:
+            screen.fill((0, 0, 0))
+            customer.draw(camX, camY)
+            player.draw(camX, camY)
+            draw_text_input_box(screen, font, prompt, input_rect, input_text)
+            input_text, enter_pressed, run = handle_text_input(events=py.event.get(), input_text=input_text)
+            if enter_pressed:
+                intent = chatBot.classify(input_text)
+                response = chatBot.respond(intent)
+                print("Chatbot response:", response)  # For debugging, replace with your display logic
+                input_text = ''  # Clear input text after submission
+            renderCustomerResponse(response)
+            for event in py.event.get():
+                if event == py.KEYDOWN:
+                    if event.key == py.K_ESCAPE:
+                        run = False
+                if event.type == py.QUIT:
+                    run = False
+            py.display.flip()
+        return
+
+
 
 
 
