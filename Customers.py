@@ -50,7 +50,8 @@ class Customers(py.sprite.Sprite):
     #TODO: 
     def determineNextLocation(self):
         #variables to use: self.targetX, self.targetY, self.paid, self.togo
-        pass
+        self.targetX
+        self.targetY
     
     def pathfinding(self, obstacles):
         now = py.time.get_ticks()
@@ -153,5 +154,7 @@ class Customers(py.sprite.Sprite):
             y = self.rect.top - 30
             self.screen.blit(text_surface, (x, y))
 
+
+    
 
     

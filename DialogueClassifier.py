@@ -2,7 +2,10 @@ import numpy as np
 from sklearn.naive_bayes import MultinomialNB
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
+<<<<<<< HEAD
 import random
+=======
+>>>>>>> c73ae3de227becd480932463af9bbb7abd1ba6c9
 
 class DialogueClassifier:
     def __init__(self):
@@ -47,5 +50,3 @@ class DialogueClassifier:
             return random.choice(self.responses['Greetings'])
         if intent == 'Goodbyes':
             return random.choice(self.responses['Goodbyes'])
-        
-
