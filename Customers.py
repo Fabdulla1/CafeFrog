@@ -36,8 +36,10 @@ class Customers(py.sprite.Sprite):
         self.paid = False
         self.togo = False
         #Customer's target location upon entrance. Takes them straight to the cash register.
-        self.targetX = 711
-        self.targetY = 361
+        self.targetX = (self.screen.get_width() // 2) + 70
+        self.targetY = self.screen.get_height() // 2
+
+        self.status = 'In Line'
 
     def get_image(self, frameX, frameY):
         image = py.Surface((self.frame_width, self.frame_height), py.SRCALPHA)
@@ -50,8 +52,10 @@ class Customers(py.sprite.Sprite):
     #TODO: 
     def determineNextLocation(self):
         #variables to use: self.targetX, self.targetY, self.paid, self.togo
-        self.targetX
-        self.targetY
+        if self.paid:
+            self.targetX = 700
+            self.targetY = 40
+            self.status = 'Paid'
     
     def pathfinding(self, obstacles):
         now = py.time.get_ticks()
@@ -59,8 +63,9 @@ class Customers(py.sprite.Sprite):
         self.determineNextLocation()
 
         
-        if abs(self.dx - self.targetX) <= 4 and abs(self.dy - self.targetY) <= 4:
+        if abs(self.dx - self.targetX) <= 10 and abs(self.dy - self.targetY) <= 10:
             self.set_idle_animation()
+            self.status = 'Ordering'
             return
 
         directions = {
@@ -75,6 +80,10 @@ class Customers(py.sprite.Sprite):
             for direction, (dx, dy, _) in directions.items()
         }
 
+        #Quick sorting
+        sorted_f_values = sorted(f_values.items(), key=lambda item: item[1])
+        sorted_f_values_dict = dict(sorted_f_values)
+
         direction = min(f_values, key=f_values.get)
         dx, dy, self.animation_frames = directions[direction]
 
@@ -83,7 +92,16 @@ class Customers(py.sprite.Sprite):
             self.dx += dx
             self.dy += dy
         else:
-            self.set_idle_animation()
+            if self.status == 'In Line':
+                self.set_idle_animation()
+            else:
+                for path in directions.keys():
+                    if path != direction:
+                        if self.canMove(directions[path][0], directions[path][1], obstacles):
+                            moving = True
+                            self.dx += directions[path][0]
+                            self.dy += directions[path][1]
+
 
         self.update_animation(now, moving)
 

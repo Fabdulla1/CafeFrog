@@ -191,9 +191,11 @@ class Screens:
             input_text, enter_pressed, run = handle_text_input(events=py.event.get(), input_text=input_text)
             if enter_pressed:
                 intent = chatBot.classify(input_text)
-                response = chatBot.respond(intent)
+                response = chatBot.respond(intent, customer.status, customer.paid)
                 print("Chatbot response:", response)  # For debugging, replace with your display logic
                 input_text = ''  # Clear input text after submission
+                if intent == 'Order Inquiry':
+                    customer.paid = True
             renderCustomerResponse(response)
             for event in py.event.get():
                 if event == py.KEYDOWN:
